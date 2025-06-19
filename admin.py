@@ -16,7 +16,7 @@ import zipfile
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-
+from typing import Optional
 import httpx
 import toml
 import typer
@@ -71,7 +71,8 @@ def main(
 @app.command()
 def install(
         context: typer.Context,
-        build_src: bool = True
+        build_src: bool = True,
+        qgis_profiles_dir: Optional[str] = None,
 ):
     """Deploys plugin to QGIS plugins directory
 
@@ -88,9 +89,8 @@ def install(
     built_directory = build(context, clean=True) \
         if build_src else LOCAL_ROOT_DIR / "build" / SRC_NAME
 
-    root_directory = Path.home() / \
-                     f".local/share/QGIS/QGIS3/profiles/" \
-                     f"{context.obj['qgis_profile']}"
+    profiles_root = Path(qgis_profiles_dir) if qgis_profiles_dir is not None else Path.home() / ".local/share/QGIS/QGIS3/"
+    root_directory = profiles_root / f"profiles/{context.obj['qgis_profile']}"
 
     base_target_directory = root_directory / "python/plugins" / SRC_NAME
     _log(f"Copying built plugin to {base_target_directory}...", context=context)
