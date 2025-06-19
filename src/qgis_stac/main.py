@@ -31,7 +31,7 @@ class QgisStac:
     def __init__(self, iface):
         self.iface = iface
         self.plugin_dir = os.path.dirname(__file__)
-        locale = QgsSettings().value("locale/userLocale")[0:2]
+        locale = QgsSettings().value(key="locale/userLocale", defaultValue="en-us")[0:2]
         locale_path = os.path.join(
             self.plugin_dir, "i18n", "QgisStac_{}.qm".format(locale)
         )
